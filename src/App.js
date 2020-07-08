@@ -1,25 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import PrivateRouter from './functions/privateRouter';
+import HomeScreen from './screens/tours/HomeScreen';
+import DetailTourScreen from './screens/tours/DetailTourScreen';
+import RegisterScreen from './screens/auth/RegisterScreen';
+import SigninScreen from './screens/auth/SigninScreen';
+import ProfileScreen from './screens/users/ProfileScreen';
+import MyBookingScreen from './screens/users/MyBookingScreen';
+import MyBookingScreen2 from './screens/users/MyBookingScreen2';
+import MyReviewScreen from './screens/users/MyReviewScreen';
+//admin
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+        <div className="App">
+          <Switch>
+            <Route exact path="/" component={HomeScreen} />
+            <Route exact path="/tour/:id" component={DetailTourScreen} />
+            <Route exact path="/register" component={RegisterScreen} />
+            <Route exact path="/login" component={SigninScreen} />
+            <PrivateRouter exact path="/profile" component={ProfileScreen} />
+            <PrivateRouter exact path="/my-tours" component={MyBookingScreen2} />
+            <PrivateRouter exact path="/my-reviews" component={MyReviewScreen} />
+
+          </Switch>
+        </div>
+      </Router>
   );
 }
 
