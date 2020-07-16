@@ -82,7 +82,7 @@ function ProfileScreen(props) {
                   </div>
                   <div className="form__group ma-bt-md">
                       <label className="form__label" htmlFor="email">Email address</label>
-                      <input onChange={(e) => setEmail(e.target.value)} className="form__input" id="email" type="email" value={email} required="required" />
+                      <input onChange={(e) => setEmail(e.target.value)} className="form__input" id="email" type="email" value={email} required="required" disabled/>
                   </div>
                   <div className="form__group form__photo-upload">
                       <img

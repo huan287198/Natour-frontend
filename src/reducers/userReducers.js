@@ -1,6 +1,7 @@
-import { USER_SIGNIN_REQUEST, USER_SIGNIN_SUCCESS, USER_SIGNIN_FAIL, 
-    USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, 
-    USER_LOGOUT, USER_UPDATE_REQUEST, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL 
+import { 
+  USER_SIGNIN_REQUEST, USER_SIGNIN_SUCCESS, USER_SIGNIN_FAIL, 
+  USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, 
+  USER_LOGOUT, USER_UPDATE_REQUEST, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL 
 } from "../constants/userConstants";
 
 function userSigninReducer(state = {}, action) {
@@ -16,6 +17,30 @@ function userSigninReducer(state = {}, action) {
     default: return state;
   }
 }
+
+// function addToCartReducer(state = {}, action) {
+//   switch (action.type) {
+//     case ADD_TO_CART_REQUEST:
+//       return { loading: true };
+//     case ADD_TO_CART_SUCCESS:
+//       return { loading: false, cart: action.payload };
+//     case ADD_TO_CART_FAIL:
+//       return { loading: false, error: action.payload };
+//     default: return state;
+//   }
+// }
+
+// function getCartReducer(state = {}, action) {
+//   switch (action.type) {
+//     case GET_CART_ITEM_REQUEST:
+//       return { loading: true };
+//     case GET_CART_ITEM_SUCCESS:
+//       return { loading: false, carts: action.payload };
+//     case GET_CART_ITEM_FAIL:
+//       return { loading: false, error: action.payload };
+//     default: return state;
+//   }
+// }
 
 function userUpdateReducer(state = {}, action) {
   switch (action.type) {

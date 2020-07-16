@@ -2,15 +2,16 @@ import {
     TOUR_LIST_REQUEST, TOUR_LIST_SUCCESS, TOUR_LIST_FAIL,
     TOUR_DETAILS_REQUEST, TOUR_DETAILS_SUCCESS, TOUR_DETAILS_FAIL,
     TOUR_BOOKED_REQUEST, TOUR_BOOKED_SUCCESS, TOUR_BOOKED_FAIL,
-    TOUR_TOP5_REQUEST, TOUR_TOP5_SUCCESS, TOUR_TOP5_FAIL,
-  } from "../constants/tourConstants"
+    TOUR_TOP3_REQUEST, TOUR_TOP3_SUCCESS, TOUR_TOP3_FAIL,
+  } from "../constants/tourConstants";
+import { HOME_URL } from '../constants/configConstants';
 import axios from 'axios';
 
-const listTours = (difficulty = '', search = '', sort = '') => async (dispatch) => {
+const listTours = (category = '', search = '', sort = '', duration = '') => async (dispatch) => {
     try {
       dispatch({ type: TOUR_LIST_REQUEST });
-      const res = await axios.get("http://localhost:5000/api/v1/tours/client?difficulty=" + difficulty +
-        "&search=" + search + "&sort=" + sort);
+      const res = await axios.get(`${HOME_URL}/api/v1/tours/client?category=` + category +
+        "&search=" + search + "&sort=" + sort + "&duration=" + duration);
       // console.log(res.data.data.data);
       dispatch({ type: TOUR_LIST_SUCCESS, payload: res.data.data.data });
     }
@@ -19,10 +20,10 @@ const listTours = (difficulty = '', search = '', sort = '') => async (dispatch) 
     }
 }
 
-const detailTour = (tourId) => async (dispatch) => {
+const detailTour = (slug) => async (dispatch) => {
   try {
-    dispatch({ type: TOUR_DETAILS_REQUEST, payload: tourId });
-    const res = await axios.get("http://localhost:5000/api/v1/tours/" + tourId);
+    dispatch({ type: TOUR_DETAILS_REQUEST, payload: slug });
+    const res = await axios.get(`${HOME_URL}/api/v1/tours/` + slug);
     
     dispatch({ type: TOUR_DETAILS_SUCCESS, payload: 
       { 
@@ -36,11 +37,11 @@ const detailTour = (tourId) => async (dispatch) => {
   }
 }
 
-const tourBooked = (tourId) => async (dispatch, getState) => {
+const tourBooked = (slug) => async (dispatch, getState) => {
   const { userSignin: { userInfo } } = getState();
-  dispatch({ type: TOUR_BOOKED_REQUEST, payload: tourId });
+  dispatch({ type: TOUR_BOOKED_REQUEST, payload: slug });
   try {
-    const res = await axios.get("http://localhost:5000/api/v1/tours/tour-booked/" + tourId, {
+    const res = await axios.get(`${HOME_URL}/api/v1/tours/tour-booked/` + slug, {
       headers: {
         Authorization: 'Bearer ' + userInfo.token
       }
@@ -52,16 +53,16 @@ const tourBooked = (tourId) => async (dispatch, getState) => {
   }
 }
 
-const top5Tours = () => async (dispatch) => {
+const top3Tours = () => async (dispatch) => {
   try {
-    dispatch({ type: TOUR_TOP5_REQUEST });
-    const res = await axios.get("http://localhost:5000/api/v1/tours/top-5-cheap");
+    dispatch({ type: TOUR_TOP3_REQUEST });
+    const res = await axios.get(`${HOME_URL}/api/v1/tours/top-3-cheap`);
     // console.log(res.data.data.data);
-    dispatch({ type: TOUR_TOP5_SUCCESS, payload: res.data.data.data, length : res.data.results });
+    dispatch({ type: TOUR_TOP3_SUCCESS, payload: res.data.data.data, length : res.data.results });
   }
   catch (error) {
-    dispatch({ type: TOUR_TOP5_FAIL, payload: error.message });
+    dispatch({ type: TOUR_TOP3_FAIL, payload: error.message });
   }
 }
 
-export { listTours, detailTour, tourBooked, top5Tours }
+export { listTours, detailTour, tourBooked, top3Tours }

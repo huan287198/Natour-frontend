@@ -2,7 +2,7 @@ import {
     TOUR_LIST_REQUEST, TOUR_LIST_SUCCESS, TOUR_LIST_FAIL,
     TOUR_DETAILS_REQUEST, TOUR_DETAILS_SUCCESS, TOUR_DETAILS_FAIL,
     TOUR_BOOKED_REQUEST, TOUR_BOOKED_SUCCESS, TOUR_BOOKED_FAIL,
-    TOUR_TOP5_REQUEST, TOUR_TOP5_SUCCESS, TOUR_TOP5_FAIL,
+    TOUR_TOP3_REQUEST, TOUR_TOP3_SUCCESS, TOUR_TOP3_FAIL,
   } from "../constants/tourConstants"
 
 function tourListReducer(state = { tours: [] }, action) {
@@ -47,13 +47,13 @@ function tourBookedReducer(state = { tour: {} }, action) {
     }
 }
 
-function top5TourReducer(state = { tours: [] }, action) {
+function top3TourReducer(state = { tours: [] }, action) {
   switch (action.type) {
-      case TOUR_TOP5_REQUEST:
+      case TOUR_TOP3_REQUEST:
       return { loading: true, tours: [] };
-      case TOUR_TOP5_SUCCESS:
+      case TOUR_TOP3_SUCCESS:
       return { loading: false, tours: action.payload, length: action.length };
-      case TOUR_TOP5_FAIL:
+      case TOUR_TOP3_FAIL:
       return { loading: false, error: action.payload }
       default:
       return state;
@@ -61,4 +61,4 @@ function top5TourReducer(state = { tours: [] }, action) {
 }
 
 
-export { tourListReducer, tourDetailReducer, tourBookedReducer, top5TourReducer }
+export { tourListReducer, tourDetailReducer, tourBookedReducer, top3TourReducer }

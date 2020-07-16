@@ -35,6 +35,7 @@ function Header(props) {
                     </Link> : null
                 } */}
                 <button type="button" onClick={handleLogout} className="nav__el nav__el--logout">Đăng xuất</button>
+                
                 <Link className="nav__el" to="/profile">
                     <img className="nav__user-img" src={srcPhoto} alt="user" />
                     <p>{userInfo.data.user.name}</p>

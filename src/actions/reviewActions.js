@@ -5,18 +5,20 @@ import {
   REVIEW_DELETE_REQUEST, REVIEW_DELETE_SUCCESS, REVIEW_DELETE_FAIL,
 } from "../constants/reviewConstants";
 import { showAlert } from '../functions/alerts';
+import { HOME_URL } from '../constants/configConstants';
 
 const listMyReviews = () => async (dispatch, getState) => {
     try {
       dispatch({ type: MY_REVIEW_LIST_REQUEST });
       const { userSignin: { userInfo } } = getState();
-      const res = await axios.get("http://localhost:5000/api/v1/users/my-reviews", {
+      const res = await axios.get(`${HOME_URL}/api/v1/users/my-reviews`, {
         headers:
           { Authorization: 'Bearer ' + userInfo.token }
       });
       dispatch({ type: MY_REVIEW_LIST_SUCCESS, payload: res.data.data.data })
     } catch (error) {
-      dispatch({ type: MY_REVIEW_LIST_FAIL, payload: error.message });
+      dispatch({ type: MY_REVIEW_LIST_FAIL, payload: error.response.data.message });
+      showAlert('error', error.response.data.message);
     }
 }
 
@@ -25,7 +27,7 @@ const saveReview = (review, tourId) => async (dispatch, getState) => {
     dispatch({ type: REVIEW_SAVE_REQUEST, payload: review });
     const { userSignin: { userInfo } } = getState();
     if (!review._id) {
-      const res = await axios.post(`http://localhost:5000/api/v1/tours/${tourId}/reviews`, 
+      const res = await axios.post(`${HOME_URL}/api/v1/tours/${tourId}/reviews`, 
       review, {
         headers: {
           'Authorization': 'Bearer ' + userInfo.token
@@ -34,7 +36,7 @@ const saveReview = (review, tourId) => async (dispatch, getState) => {
       dispatch({ type: REVIEW_SAVE_SUCCESS, payload: res.data.status });
       showAlert('success', 'Review successfully!');
     } else {
-      const res = await axios.patch('http://localhost:5000/api/v1/reviews/' + review._id, 
+      const res = await axios.patch(`${HOME_URL}/api/v1/reviews/` + review._id, 
       review, {
         headers: {
           'Authorization': 'Bearer ' + userInfo.token
@@ -45,7 +47,7 @@ const saveReview = (review, tourId) => async (dispatch, getState) => {
     }
 
   } catch (error) {
-    dispatch({ type: REVIEW_SAVE_FAIL, payload: error.message });
+    dispatch({ type: REVIEW_SAVE_FAIL, payload: error.response.data.message });
     showAlert('error', error.response.data.message);
   }
 }
@@ -61,8 +63,8 @@ const deleteReview = (reviewId) => async (dispatch, getState) => {
     });
     dispatch({ type: REVIEW_DELETE_SUCCESS, payload: res.data, success: true });
   } catch (error) {
-    dispatch({ type: REVIEW_DELETE_FAIL, payload: error.message });
-
+    dispatch({ type: REVIEW_DELETE_FAIL, payload: error.response.data.message });
+    showAlert('error', error.response.data.message);
   }
 }
 

@@ -7,7 +7,6 @@ import RegisterScreen from './screens/auth/RegisterScreen';
 import SigninScreen from './screens/auth/SigninScreen';
 import ProfileScreen from './screens/users/ProfileScreen';
 import MyBookingScreen from './screens/users/MyBookingScreen';
-import MyBookingScreen2 from './screens/users/MyBookingScreen2';
 import MyReviewScreen from './screens/users/MyReviewScreen';
 //admin
 
@@ -17,13 +16,12 @@ function App() {
         <div className="App">
           <Switch>
             <Route exact path="/" component={HomeScreen} />
-            <Route exact path="/tour/:id" component={DetailTourScreen} />
+            <Route exact path="/tour/:slug" component={DetailTourScreen} />
             <Route exact path="/register" component={RegisterScreen} />
             <Route exact path="/login" component={SigninScreen} />
             <PrivateRouter exact path="/profile" component={ProfileScreen} />
-            <PrivateRouter exact path="/my-tours" component={MyBookingScreen2} />
+            <PrivateRouter exact path="/my-tours/:id?" component={MyBookingScreen} />
             <PrivateRouter exact path="/my-reviews" component={MyReviewScreen} />
-
           </Switch>
         </div>
       </Router>

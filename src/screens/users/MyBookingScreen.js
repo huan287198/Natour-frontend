@@ -1,112 +1,166 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { listMyBooks } from '../../actions/bookActions';
+import { listMyBooks, createBooking } from '../../actions/bookActions';
 import { useDispatch, useSelector } from 'react-redux';
 import NavBar from '../layouts/NavBar';
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 
+
 function MyBookingScreen(props) {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [name, setName] = useState('');
+    const [imageCover, setImageCover] = useState('');
+    const [qty1, setQty1] = useState('');
+    const [price1, setPrice1] = useState('');
+    const [paid1, setPaid1] = useState('');
+    const [createdAt, setCreatedAt] = useState('');
+
     const userSignin = useSelector(state => state.userSignin);
     const { userInfo } = userSignin;
 
     const myBookList = useSelector(state => state.myBookList);
-    const { loading: loadingBooks, books, error: errorBooks } = myBookList;
+    const { loading, books, error, paid } = myBookList;
+
+    const bookCreate = useSelector(state => state.bookCreate);
+    const { success } = bookCreate;
+
+    const tour = props.match.params.id;
+    // const qty = props.location.search.split("?")[1].split("&");
+    const qty = props.location.search ? Number(props.location.search.split("?")[1].split("&")[2]) : 1;
+    const price = props.location.search ? Number(props.location.search.split("?")[1].split("&")[1]) : 1;
+    const user = props.location.search ? props.location.search.split("?")[1].split("&")[0] : 1;
+    console.log(user);
 
     const dispatch = useDispatch();
+    
+    useEffect(() => {
+        if (tour) {
+            dispatch(createBooking({ tour, user, price, qty}));
+        }
+        dispatch(listMyBooks());
+        return () => {
 
-  useEffect(() => {
-    if (userInfo) {
+        };
+    }, [success]);
 
+    const openModal = (book) => {
+        setModalVisible(true);
+        setName(book.tour.name);
+        setImageCover(book.tour.imageCover);
+        setQty1(book.qty);
+        setPrice1(book.price);
+        setPaid1(book.paid);
+        setCreatedAt(book.createdAt);
     }
-    dispatch(listMyBooks());
-    return () => {
 
-    };
-  }, [dispatch, userInfo]);
+    const imgStyle = {
+        height: '25rem',
+        width: '25rem'
+    }
+
     return (<div>
         <Header/>
         <main className="main">
-                <div className="user-view">
-                    <NavBar history={props.history}/>
-                    
-                    <div className="user-view__content">
-                        <div className="card-container2">
-                            <h2 className="heading-secondary ma-bt-md">My tours</h2>
-                        </div>
-                        <div className="card-container2">
-                            {loadingBooks ? <div>Loading...</div> :
-                        errorBooks ? <div>{errorBooks} </div> :
-                        books.map((tour, i) => {
-                        const date = new Date(tour.startDates[0]).toDateString();
-                        return (
-                            <div className="card" key={i}>
-                                <div className="card__header">
-                                    <div className="card__picture">
-                                    <div className="card__picture-overlay">&nbsp;</div>
-                                    <img
-                                        src={`/img/tours/${tour.imageCover}`}
-                                        alt={tour.name}
-                                        className="card__picture-img"
+            <div className="user-view">
+                <NavBar history={props.history}/>
+                <div className="user-view__content">
+                    <div className="user-view__form-container2">
+                        <h2 className="heading-secondary ma-bt-md">Your bookings</h2>
+                        {modalVisible && (
+                            <>
+                            <form className="form form-user-data" >
+                                <div className="form__group">
+                                    <label className="form__label" htmlFor="name">Tên tour</label>
+                                    <input className="form__input" id="name" type="text" value={name} disabled/>
+                                </div>
+                                <div className="form__group ma-bt-md">
+                                    <label className="form__label" htmlFor="imageCover">Ảnh</label>
+                                    <div className="field__wrap">
+                                    <img 
+                                        src={`http://localhost:5000/img/tours/${imageCover}`}
+                                        id="outputPhoto" alt='photo22' style={ imgStyle }
                                     />
-                                    </div>
-
-                                    <h3 className="heading-tertirary">
-                                    <span>{tour.name}</span>
-                                    </h3>
+                                    </div> 
                                 </div>
-
-                                <div className="card__details">
-                                    <h4 className="card__sub-heading">{`${tour.difficulty} ${tour.duration}-day tour`}</h4>
-                                    <p className="card__text">
-                                    {tour.summary}
-                                    </p>
-                                    <div className="card__data">
-                                    <svg className="card__icon">
-                                        <use xlinkHref="img/icons.svg#icon-map-pin"></use>
-                                    </svg>
-                                    <span>{tour.startLocation.description}</span>
-                                    </div>
-                                    <div className="card__data">
-                                    <svg className="card__icon">
-                                        <use xlinkHref="img/icons.svg#icon-calendar"></use>
-                                    </svg>
-                                    <span>{date}</span>
-                                    </div>
-                                    <div className="card__data">
-                                    <svg className="card__icon">
-                                        <use xlinkHref="img/icons.svg#icon-flag"></use>
-                                    </svg>
-                                    <span>{`${tour.locations.length} stops`}</span>
-                                    </div>
-                                    <div className="card__data">
-                                    <svg className="card__icon">
-                                        <use xlinkHref="img/icons.svg#icon-user"></use>
-                                    </svg>
-                                    <span>{`${tour.maxGroupSize} people`}</span>
-                                    </div>
+                                <div className="form__group">
+                                    <label className="form__label" htmlFor="price1">Giá</label>
+                                    <input className="form__input" id="price1" type="text" value={price1} disabled/>
                                 </div>
-
-                                <div className="card__footer">
-                                    <p>
-                                    <span className="card__footer-value">{`$${tour.price}`}</span>
-                                    <span className="card__footer-text"> per person</span>
-                                    </p>
-                                    <p className="card__ratings">
-                                    <span className="card__footer-value">{tour.ratingsAverage}</span>
-                                    <span className="card__footer-text">{` rating (${tour.ratingsQuantity})`}</span>
-                                    </p>
-                                    <Link to={`/tour/${tour.id}`} className="btn btn--green btn--small">Details</Link>
+                                <div className="form__group">
+                                    <label className="form__label" htmlFor="qty1">Số lượng</label>
+                                    <input className="form__input" id="qty1" type="text" value={qty1} disabled/>
                                 </div>
-                            </div>
-                        )
-                    })}
-                        </div>
+                                <div className="form__group">
+                                    <label className="form__label" >Thành tiền</label>
+                                    <input className="form__input" type="text" value={qty1 * price1} disabled/>
+                                </div>
+                                <div className="form__group">
+                                    <label className="form__label" htmlFor="paid1">Trạng thái</label>
+                                    <input className="form__input" id="paid1" type="text" value={paid1 ? 'Thành công' : 'Chờ xác nhận'} disabled/>
+                                </div>
+                                <div className="form__group">
+                                    <label className="form__label" >Ngày đặt</label>
+                                    <input className="form__input" type="text" value={createdAt} disabled/>
+                                </div>
+                                <div className="form__group right">
+                                    <button type="button" onClick={() => setModalVisible(false)} className="btn btn--primary">Quay lại</button>
+                                </div>
+                            </form>
+                            <div className="line">&nbsp;</div>
+                            </>
+                        )}
+                    </div>
+                    <div className="user-view__form-container2">
+                    {loading ? <div>Loading...</div> : null}
+                    {error ? <div>{error} </div> : null}
+                    <table className="form form-user-data table table-bordered dataTable" id="dataTable" width="100%" cellSpacing="0" role="grid" aria-describedby="dataTable_info">
+                            <thead className="thead-light">
+                                <tr role="row">
+                                    <td width="150px">Tên tour</td>
+                                    <td width="100px">Ảnh đại diện</td>
+                                    <td width="60px">Loại tuor</td>
+                                    <td width="100px">Ngày khởi hành </td>
+                                    <td width="80px">Trạng thái</td>
+                                    <td>Hành động</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {books ? books.map((book, i) => {
+                                    const date = new Date(book.tour.startDates[0]).toDateString();
+                                    return (
+                                        <tr role="row" key={i+1}>
+                                            <td>{book.tour.name}</td>
+                                            <Link to={"/tour/" + book.tour.slug}>
+                                            <td>
+                                                <img
+                                                    className={"form__user-photo2"}
+                                                    src={`http://localhost:5000/img/tours/${book.tour.imageCover}`}
+                                                    alt={`The Park Camper Tour ${i+1}`}
+                                                />
+                                            </td>
+                                            </Link>
+                                            <td>{book.tour.category === "domestic" ? "Tour trong nước" : "Tour ngoài nước"}</td>
+                                            <td>{date}</td>
+                                            <td>{paid[i] ? `Thành công` : `Chờ xác nhận`}</td>
+                                            <td>
+                                                
+                                                <button className="btn--primary" onClick={() => openModal(book)}>
+                                                    Xem chi tiet
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    )
+                                }) : null}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </main>
-            <Footer/>
-        </div>
+            </div>
+        </main>
+        <Footer/>
+        {/* {success && alert("book thanh cong")} */}
+    </div>
     )
 }
 

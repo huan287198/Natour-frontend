@@ -85,7 +85,14 @@ function MyReviewScreen(props) {
                                 </div>
                                 <div className="form__group ma-bt-md">
                                     <label className="form__label" htmlFor="rating">Rating</label>
-                                    <input onChange={(e) => setRating(e.target.value)} className="form__input" id="rating" type="text" value={rating} required="required" />
+                                    {/* <input onChange={(e) => setRating(e.target.value)} className="form__input" id="rating" type="text" value={rating} required="required" /> */}
+                                    <select className="form__input" name="rating" id="rating" value={rating} onChange={(e) => setRating(e.target.value)}>
+                                        <option value='1'>1 sao </option>
+                                        <option value='2'>2 sao</option>
+                                        <option value='3'>3 sao</option>
+                                        <option value='4'>4 sao</option>
+                                        <option value='5'>5 sao</option>
+                                    </select>
                                 </div>
                                 <div className="form__group right">
                                     <button type="submit" className="btn btn--green">{id ? "Cập nhật" : "Thêm"}</button>
@@ -119,7 +126,7 @@ function MyReviewScreen(props) {
                                             <td>
                                                 <img
                                                     className={"form__user-photo2"}
-                                                    src={`/img/tours/${review.tour.imageCover}`}
+                                                    src={`http://localhost:5000/img/tours/${review.tour.imageCover}`}
                                                     alt={`The Park Camper Tour ${i+1}`}
                                                 />
                                             </td>

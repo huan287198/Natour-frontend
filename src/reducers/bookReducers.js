@@ -1,6 +1,7 @@
 import {
   MY_BOOK_LIST_REQUEST, MY_BOOK_LIST_SUCCESS, MY_BOOK_LIST_FAIL,
   BOOK_CREATE_REQUEST, BOOK_CREATE_SUCCESS, BOOK_CREATE_FAIL,
+  BOOK_SAVE_REQUEST, BOOK_SAVE_SUCCESS, BOOK_SAVE_FAIL,
   BOOK_LIST_REQUEST, BOOK_LIST_SUCCESS, BOOK_LIST_FAIL,
   BOOK_DELETE_REQUEST, BOOK_DELETE_SUCCESS, BOOK_DELETE_FAIL,
 } from "../constants/bookConstants";
@@ -12,7 +13,7 @@ function myBookListReducer(state = {
       case MY_BOOK_LIST_REQUEST:
         return { loading: true };
       case MY_BOOK_LIST_SUCCESS:
-        return { loading: false, books: action.payload };
+        return { loading: false, books: action.payload, paid: action.paid };
       case MY_BOOK_LIST_FAIL:
         return { loading: false, error: action.payload };
       default: return state;
@@ -26,6 +27,18 @@ function bookTourReducer(state = {}, action) {
     case BOOK_CREATE_SUCCESS:
       return { loading: false, book: action.payload, success: true };
     case BOOK_CREATE_FAIL:
+      return { loading: false, error: action.payload };
+    default: return state;
+  }
+}
+
+function createBookingReducer(state = {}, action) {
+  switch (action.type) {
+    case BOOK_SAVE_REQUEST:
+      return { loading: true };
+    case BOOK_SAVE_SUCCESS:
+      return { loading: false, book: action.payload, success: true };
+    case BOOK_SAVE_FAIL:
       return { loading: false, error: action.payload };
     default: return state;
   }
@@ -57,4 +70,4 @@ function bookDeleteReducer(state = { book: {} }, action) {
   }
 }
 
-export { myBookListReducer, bookTourReducer, bookListReducer, bookDeleteReducer };
+export { myBookListReducer, bookTourReducer, bookListReducer, bookDeleteReducer, createBookingReducer };
